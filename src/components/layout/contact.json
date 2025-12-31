@@ -1,0 +1,17 @@
+{
+    "collectionName": "components_layout_contacts",
+    "info": {
+        "displayName": "Contacto",
+        "icon": "phone",
+        "description": ""
+    },
+    "options": {},
+    "attributes": {
+        "title": {
+            "type": "string"
+        },
+        "subtitle": {
+            "type": "text"
+        }
+    }
+}

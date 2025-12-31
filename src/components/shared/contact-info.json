@@ -1,0 +1,20 @@
+{
+    "collectionName": "components_shared_contact_infos",
+    "info": {
+        "displayName": "Información de contacto",
+        "icon": "address-book",
+        "description": ""
+    },
+    "options": {},
+    "attributes": {
+        "email": {
+            "type": "email"
+        },
+        "phone": {
+            "type": "string"
+        },
+        "whatsappNumber": {
+            "type": "string"
+        }
+    }
+}

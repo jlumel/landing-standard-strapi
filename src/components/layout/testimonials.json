@@ -1,0 +1,16 @@
+{
+    "collectionName": "components_layout_testimonials",
+    "info": {
+        "displayName": "Testimonios",
+        "icon": "quote",
+        "description": ""
+    },
+    "options": {},
+    "attributes": {
+        "items": {
+            "type": "component",
+            "repeatable": true,
+            "component": "layout.testimonial-item"
+        }
+    }
+}
