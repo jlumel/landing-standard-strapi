@@ -4,7 +4,7 @@
     "info": {
         "singularName": "lead",
         "pluralName": "leads",
-        "displayName": "Lead",
+        "displayName": "Leads",
         "description": ""
     },
     "options": {
@@ -15,17 +15,16 @@
         "name": {
             "type": "string"
         },
-        "email": {
-            "type": "email"
-        },
         "phone": {
             "type": "string"
         },
-        "message": {
-            "type": "text"
+        "email": {
+            "type": "email"
         },
-        "date": {
-            "type": "datetime"
+        "interest": {
+            "type": "relation",
+            "relation": "oneToOne",
+            "target": "api::car.car"
         }
     }
 }

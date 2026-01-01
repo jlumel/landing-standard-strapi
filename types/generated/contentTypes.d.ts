@@ -430,6 +430,36 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiCarCar extends Struct.CollectionTypeSchema {
+  collectionName: 'cars';
+  info: {
+    description: 'Inventory cars';
+    displayName: 'Auto';
+    pluralName: 'cars';
+    singularName: 'car';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    brand: Schema.Attribute.String & Schema.Attribute.Required;
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    image: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::car.car'> &
+      Schema.Attribute.Private;
+    mileage: Schema.Attribute.Integer & Schema.Attribute.Required;
+    model: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    year: Schema.Attribute.Integer & Schema.Attribute.Required;
+  };
+}
+
 export interface ApiGlobalSettingGlobalSetting extends Struct.SingleTypeSchema {
   collectionName: 'global_settings';
   info: {
@@ -442,21 +472,18 @@ export interface ApiGlobalSettingGlobalSetting extends Struct.SingleTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
-    contact: Schema.Attribute.Component<'shared.contact-info', false>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    favicon: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
       'api::global-setting.global-setting'
     > &
       Schema.Attribute.Private;
-    logo: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
     publishedAt: Schema.Attribute.DateTime;
-    scripts: Schema.Attribute.Component<'shared.scripts', false>;
     seo: Schema.Attribute.Component<'shared.seo', false>;
+    siteFavicon: Schema.Attribute.Media;
     siteName: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -479,9 +506,8 @@ export interface ApiLandingPageLandingPage extends Struct.SingleTypeSchema {
     blocks: Schema.Attribute.DynamicZone<
       [
         'layout.hero',
-        'layout.features',
-        'layout.testimonials',
-        'layout.about',
+        'layout.inventory',
+        'layout.inventory-item',
         'layout.contact',
       ]
     >;
@@ -505,7 +531,7 @@ export interface ApiLeadLead extends Struct.CollectionTypeSchema {
   collectionName: 'leads';
   info: {
     description: '';
-    displayName: 'Lead';
+    displayName: 'Leads';
     pluralName: 'leads';
     singularName: 'lead';
   };
@@ -516,12 +542,11 @@ export interface ApiLeadLead extends Struct.CollectionTypeSchema {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    date: Schema.Attribute.DateTime;
     email: Schema.Attribute.Email;
+    interest: Schema.Attribute.Relation<'oneToOne', 'api::car.car'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::lead.lead'> &
       Schema.Attribute.Private;
-    message: Schema.Attribute.Text;
     name: Schema.Attribute.String;
     phone: Schema.Attribute.String;
     publishedAt: Schema.Attribute.DateTime;
@@ -1041,6 +1066,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::car.car': ApiCarCar;
       'api::global-setting.global-setting': ApiGlobalSettingGlobalSetting;
       'api::landing-page.landing-page': ApiLandingPageLandingPage;
       'api::lead.lead': ApiLeadLead;

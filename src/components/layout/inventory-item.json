@@ -1,20 +1,26 @@
 {
     "collectionName": "components_layout_inventory_items",
     "info": {
-        "displayName": "Item",
+        "displayName": "Auto",
         "icon": "check",
         "description": ""
     },
     "options": {},
     "attributes": {
-        "icon": {
+        "image": {
+            "type": "media"
+        },
+        "brand": {
             "type": "string"
         },
-        "title": {
+        "model": {
             "type": "string"
         },
-        "description": {
-            "type": "text"
+        "year": {
+            "type": "integer"
+        },
+        "mileage": {
+            "type": "integer"
         }
     }
 }

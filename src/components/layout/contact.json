@@ -7,10 +7,16 @@
     },
     "options": {},
     "attributes": {
-        "title": {
+        "address": {
+            "type": "text"
+        },
+        "phone": {
             "type": "string"
         },
-        "subtitle": {
+        "email": {
+            "type": "email"
+        },
+        "mapsLink": {
             "type": "text"
         }
     }

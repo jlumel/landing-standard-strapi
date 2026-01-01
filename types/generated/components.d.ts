@@ -1,19 +1,5 @@
 import type { Schema, Struct } from '@strapi/strapi';
 
-export interface LayoutAbout extends Struct.ComponentSchema {
-  collectionName: 'components_layout_abouts';
-  info: {
-    description: '';
-    displayName: 'Acerca de';
-    icon: 'information';
-  };
-  attributes: {
-    content: Schema.Attribute.Blocks;
-    image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
-    title: Schema.Attribute.String;
-  };
-}
-
 export interface LayoutContact extends Struct.ComponentSchema {
   collectionName: 'components_layout_contacts';
   info: {
@@ -22,22 +8,10 @@ export interface LayoutContact extends Struct.ComponentSchema {
     icon: 'phone';
   };
   attributes: {
-    subtitle: Schema.Attribute.Text;
-    title: Schema.Attribute.String;
-  };
-}
-
-export interface LayoutFeatureItem extends Struct.ComponentSchema {
-  collectionName: 'components_layout_feature_items';
-  info: {
-    description: '';
-    displayName: 'Caracter\u00EDstica';
-    icon: 'check';
-  };
-  attributes: {
-    description: Schema.Attribute.Text;
-    icon: Schema.Attribute.String;
-    title: Schema.Attribute.String;
+    address: Schema.Attribute.Text;
+    email: Schema.Attribute.Email;
+    mapsLink: Schema.Attribute.Text;
+    phone: Schema.Attribute.String;
   };
 }
 
@@ -49,49 +23,40 @@ export interface LayoutHero extends Struct.ComponentSchema {
     icon: 'landscape';
   };
   attributes: {
-    ctaLink: Schema.Attribute.String;
-    ctaText: Schema.Attribute.String;
-    image: Schema.Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
+    bgImage: Schema.Attribute.Media<'images'>;
+    companyName: Schema.Attribute.String;
     subtitle: Schema.Attribute.Text;
     title: Schema.Attribute.String;
   };
 }
 
 export interface LayoutInventory extends Struct.ComponentSchema {
-  collectionName: 'components_layout_features';
+  collectionName: 'components_layout_inventories';
   info: {
     description: '';
-    displayName: 'Caracter\u00EDsticas';
-    icon: 'bulletList';
+    displayName: 'Inventario';
+    icon: 'car';
   };
   attributes: {
-    items: Schema.Attribute.Component<'layout.feature-item', true>;
+    cars: Schema.Attribute.Component<'layout.inventory-item', true>;
+    subtitle: Schema.Attribute.String;
+    title: Schema.Attribute.String;
   };
 }
 
-export interface LayoutTestimonialItem extends Struct.ComponentSchema {
-  collectionName: 'components_layout_testimonial_items';
+export interface LayoutInventoryItem extends Struct.ComponentSchema {
+  collectionName: 'components_layout_inventory_items';
   info: {
     description: '';
-    displayName: 'Testimonio';
-    icon: 'user';
+    displayName: 'Auto';
+    icon: 'check';
   };
   attributes: {
-    author: Schema.Attribute.String;
-    quote: Schema.Attribute.Text;
-    role: Schema.Attribute.String;
-  };
-}
-
-export interface LayoutTestimonials extends Struct.ComponentSchema {
-  collectionName: 'components_layout_testimonials';
-  info: {
-    description: '';
-    displayName: 'Testimonios';
-    icon: 'quote';
-  };
-  attributes: {
-    items: Schema.Attribute.Component<'layout.testimonial-item', true>;
+    brand: Schema.Attribute.String;
+    image: Schema.Attribute.Media;
+    mileage: Schema.Attribute.Integer;
+    model: Schema.Attribute.String;
+    year: Schema.Attribute.Integer;
   };
 }
 
@@ -140,13 +105,10 @@ export interface SharedSeo extends Struct.ComponentSchema {
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
-      'layout.about': LayoutAbout;
       'layout.contact': LayoutContact;
-      'layout.feature-item': LayoutFeatureItem;
       'layout.hero': LayoutHero;
       'layout.inventory': LayoutInventory;
-      'layout.testimonial-item': LayoutTestimonialItem;
-      'layout.testimonials': LayoutTestimonials;
+      'layout.inventory-item': LayoutInventoryItem;
       'shared.contact-info': SharedContactInfo;
       'shared.scripts': SharedScripts;
       'shared.seo': SharedSeo;

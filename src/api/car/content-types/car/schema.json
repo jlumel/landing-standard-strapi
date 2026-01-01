@@ -1,0 +1,40 @@
+{
+    "kind": "collectionType",
+    "collectionName": "cars",
+    "info": {
+        "singularName": "car",
+        "pluralName": "cars",
+        "displayName": "Auto",
+        "description": "Inventory cars"
+    },
+    "options": {
+        "draftAndPublish": true
+    },
+    "pluginOptions": {},
+    "attributes": {
+        "image": {
+            "type": "media",
+            "multiple": false,
+            "required": true,
+            "allowedTypes": [
+                "images"
+            ]
+        },
+        "brand": {
+            "type": "string",
+            "required": true
+        },
+        "model": {
+            "type": "string",
+            "required": true
+        },
+        "year": {
+            "type": "integer",
+            "required": true
+        },
+        "mileage": {
+            "type": "integer",
+            "required": true
+        }
+    }
+}

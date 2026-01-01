@@ -9,4 +9,15 @@ export default [
   'strapi::session',
   'strapi::favicon',
   'strapi::public',
+  {
+    name: 'strapi::cors',
+    config: {
+      headers: '*',
+      origin: [
+        'http://localhost:3000',
+        'http://localhost:1337',
+        'https://tu-dominio-final.com' // Tu dominio en Cloudflare (agregalo después)
+      ]
+    }
+  },
 ];

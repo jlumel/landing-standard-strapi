@@ -1,34 +1,28 @@
 {
-    "collectionName": "components_layout_heroes",
-    "info": {
-        "displayName": "Hero",
-        "icon": "landscape",
-        "description": ""
+  "collectionName": "components_layout_heroes",
+  "info": {
+    "displayName": "Hero",
+    "icon": "landscape",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "companyName": {
+      "type": "string"
     },
-    "options": {},
-    "attributes": {
-        "title": {
-            "type": "string"
-        },
-        "subtitle": {
-            "type": "text"
-        },
-        "ctaText": {
-            "type": "string"
-        },
-        "ctaLink": {
-            "type": "string"
-        },
-        "image": {
-            "type": "media",
-            "multiple": false,
-            "required": false,
-            "allowedTypes": [
-                "images",
-                "files",
-                "videos",
-                "audios"
-            ]
-        }
+    "title": {
+      "type": "string"
+    },
+    "subtitle": {
+      "type": "text"
+    },
+    "bgImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images"
+      ]
     }
+  }
 }

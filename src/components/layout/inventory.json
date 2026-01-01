@@ -1,16 +1,22 @@
 {
-    "collectionName": "components_layout_inventory",
+    "collectionName": "components_layout_inventories",
     "info": {
         "displayName": "Inventario",
-        "icon": "bulletList",
+        "icon": "car",
         "description": ""
     },
     "options": {},
     "attributes": {
-        "items": {
+        "title": {
+            "type": "string"
+        },
+        "subtitle": {
+            "type": "string"
+        },
+        "cars": {
             "type": "component",
             "repeatable": true,
-            "component": "layout.feature-item"
+            "component": "layout.inventory-item"
         }
     }
 }
