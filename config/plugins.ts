@@ -8,7 +8,7 @@ export default ({ env }) => {
                             connection: {
                                 host: env('REDIS_HOST', 'localhost'),
                                 port: env.int('REDIS_PORT', 6379),
-                                db: env.int('REDIS_DB', 1),
+                                db: env.int('REDIS_DB', 0),
                                 password: env('REDIS_PASSWORD'),
                             },
                             settings: {
