@@ -19,20 +19,23 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --prod=false
 COPY . .
 
-# Compilamos
+# Aumentamos memoria para node por las dudas, aunque el problema era disco.
 ENV NODE_ENV=production
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+
+# Compilamos
 RUN pnpm run build
 
-# --- [DETECTIVE MODE ON] ---
-# Esto imprimirá en el log DÓNDE diablos está el index.html
+# --- [DETECTIVE MODE: ACTIVADO] ---
+# Listamos el contenido para encontrar el index.html
 RUN echo "==========================================" && \
-    echo " BUSCANDO EL TESORO (index.html)... " && \
+    echo " BUSCANDO EL ADMIN PANEL... " && \
     echo "==========================================" && \
-    echo "--- 1. BUSCANDO EN DIST ---" && \
-    ls -R dist || echo "No existe dist" && \
-    echo "---------------------------" && \
-    echo "--- 2. BUSCANDO EN .STRAPI ---" && \
-    ls -R .strapi || echo "No existe .strapi" && \
+    ls -F dist && \
+    echo "--- ¿HAY CARPETA BUILD DENTRO DE DIST? ---" && \
+    ls -F dist/build || echo "No existe dist/build" && \
+    echo "--- ¿HAY CARPETA ADMIN DENTRO DE DIST? ---" && \
+    ls -F dist/admin || echo "No existe dist/admin" && \
     echo "=========================================="
 
 RUN pnpm prune --prod
@@ -43,7 +46,6 @@ RUN pnpm prune --prod
 FROM base AS runner
 ENV NODE_ENV=production
 
-# Copiamos lo básico para que arranque (aunque sin admin panel visual por ahora)
 COPY --from=build /opt/app/node_modules ./node_modules
 COPY --from=build /opt/app/dist ./dist
 COPY --from=build /opt/app/public ./public
