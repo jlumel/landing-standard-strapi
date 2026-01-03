@@ -36,29 +36,49 @@ COPY --from=build /opt/app/package.json ./package.json
 COPY --from=build /opt/app/favicon.png ./favicon.png
 COPY --from=build /opt/app/src ./src
 
-# --- CORRECCIÓN NUEVA: CREAR CARPETA UPLOADS ---
-# Creamos la carpeta manualmente para que Strapi no llore al arrancar
+# Creamos la carpeta uploads
 RUN mkdir -p public/uploads
 
-# --- INYECCIÓN DE CONFIGURACIÓN DB (LA QUE YA FUNCIONÓ) ---
+# --- INYECCIÓN MANUAL DE CONFIGURACIONES (DB, ADMIN, SERVER) ---
+# Esto asegura que Strapi encuentre todos los archivos críticos en producción
 RUN mkdir -p config && \
-    echo "module.exports = ({ env }) => { \
-      console.log('--- [DEBUG] CARGANDO CONFIGURACION INYECTADA POR DOCKER ---'); \
-      return { \
+    # 1. Database Config
+    echo "module.exports = ({ env }) => ({ \
+      connection: { \
+        client: 'postgres', \
         connection: { \
-          client: 'postgres', \
-          connection: { \
-            host: env('DATABASE_HOST'), \
-            port: env.int('DATABASE_PORT', 5432), \
-            database: env('DATABASE_NAME'), \
-            user: env('DATABASE_USERNAME'), \
-            password: env('DATABASE_PASSWORD'), \
-            ssl: env.bool('DATABASE_SSL', false), \
-          }, \
-          pool: { min: 2, max: 10 } \
-        } \
-      }; \
-    };" > ./config/database.js
+          host: env('DATABASE_HOST'), \
+          port: env.int('DATABASE_PORT', 5432), \
+          database: env('DATABASE_NAME'), \
+          user: env('DATABASE_USERNAME'), \
+          password: env('DATABASE_PASSWORD'), \
+          ssl: env.bool('DATABASE_SSL', false), \
+        }, \
+        pool: { min: 2, max: 10 } \
+      } \
+    });" > ./config/database.js && \
+    # 2. Admin Config (Acá arreglamos el error del JWT)
+    echo "module.exports = ({ env }) => ({ \
+      auth: { \
+        secret: env('ADMIN_JWT_SECRET'), \
+      }, \
+      apiToken: { \
+        salt: env('API_TOKEN_SALT'), \
+      }, \
+      transfer: { \
+        token: { \
+          salt: env('TRANSFER_TOKEN_SALT'), \
+        }, \
+      }, \
+    });" > ./config/admin.js && \
+    # 3. Server Config (Para las APP_KEYS)
+    echo "module.exports = ({ env }) => ({ \
+      host: env('HOST', '0.0.0.0'), \
+      port: env.int('PORT', 1337), \
+      app: { \
+        keys: env.array('APP_KEYS'), \
+      }, \
+    });" > ./config/server.js
 
 EXPOSE 1337
 CMD ["pnpm", "run", "start"]
