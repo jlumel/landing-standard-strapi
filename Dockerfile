@@ -62,4 +62,4 @@ RUN mkdir -p public/uploads
 
 EXPOSE 1337
 
-CMD ["node", "dist/server.js"]
+CMD ["pnpm", "run", "start"]
