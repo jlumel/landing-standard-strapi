@@ -9,6 +9,7 @@
     "module": "CommonJS",
     "moduleResolution": "node",
     "strict": true,
+    "noImplicitAny": false, 
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
@@ -24,6 +25,8 @@
     "node_modules",
     "build",
     "dist",
-    "public"
+    "public",
+    "src/admin/vite.config.example.ts",
+    "src/admin/webpack.config.example.js" 
   ]
 }
