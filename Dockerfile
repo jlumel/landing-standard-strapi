@@ -39,8 +39,7 @@ COPY --from=build /opt/app/src ./src
 # Creamos la carpeta uploads
 RUN mkdir -p public/uploads
 
-# --- INYECCIÓN MANUAL DE CONFIGURACIONES (DB, ADMIN, SERVER) ---
-# Esto asegura que Strapi encuentre todos los archivos críticos en producción
+# --- INYECCIÓN MANUAL DE CONFIGURACIONES (DB, ADMIN, SERVER, PLUGINS) ---
 RUN mkdir -p config && \
     # 1. Database Config
     echo "module.exports = ({ env }) => ({ \
@@ -57,7 +56,7 @@ RUN mkdir -p config && \
         pool: { min: 2, max: 10 } \
       } \
     });" > ./config/database.js && \
-    # 2. Admin Config (Acá arreglamos el error del JWT)
+    # 2. Admin Config
     echo "module.exports = ({ env }) => ({ \
       auth: { \
         secret: env('ADMIN_JWT_SECRET'), \
@@ -71,14 +70,22 @@ RUN mkdir -p config && \
         }, \
       }, \
     });" > ./config/admin.js && \
-    # 3. Server Config (Para las APP_KEYS)
+    # 3. Server Config
     echo "module.exports = ({ env }) => ({ \
       host: env('HOST', '0.0.0.0'), \
       port: env.int('PORT', 1337), \
       app: { \
         keys: env.array('APP_KEYS'), \
       }, \
-    });" > ./config/server.js
+    });" > ./config/server.js && \
+    # 4. Plugins Config (ACÁ ARREGLAMOS EL ERROR ACTUAL)
+    echo "module.exports = ({ env }) => ({ \
+      'users-permissions': { \
+        config: { \
+          jwtSecret: env('JWT_SECRET'), \
+        }, \
+      }, \
+    });" > ./config/plugins.js
 
 EXPOSE 1337
 CMD ["pnpm", "run", "start"]
