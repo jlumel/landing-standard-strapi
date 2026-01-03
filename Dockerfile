@@ -8,22 +8,39 @@ RUN corepack enable
 
 # Instalamos dependencias del sistema
 RUN apk update && apk add --no-cache \
-    build-base gcc autoconf automake zlib-dev libpng-dev vips-dev git curl > /dev/null 2>&1
+    build-base gcc autoconf automake zlib-dev libpng-dev vips-dev git curl
 
 WORKDIR /opt/app
+
+# -----------------------------------------------------------------------------
+# DEPENDENCIES
+# -----------------------------------------------------------------------------
+FROM base AS deps
+COPY package.json pnpm-lock.yaml ./
+
+# Usar cache de pnpm para builds más rápidos
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store \
+    pnpm install --frozen-lockfile
 
 # -----------------------------------------------------------------------------
 # BUILD STAGE
 # -----------------------------------------------------------------------------
 FROM base AS build
 COPY package.json pnpm-lock.yaml ./
-RUN pnpm install --frozen-lockfile --prod=false
-COPY . .
+COPY --from=deps /opt/app/node_modules ./node_modules
 
-# Compilamos
+# Copiamos solo lo necesario para el build (respetando .dockerignore)
+COPY tsconfig.json ./
+COPY config ./config
+COPY src ./src
+COPY types ./types
+COPY public ./public
+COPY favicon.png ./favicon.png
+
+# Build de Strapi
 RUN pnpm run build
 
-# Limpiamos dependencias dev
+# Limpiamos dependencias de desarrollo
 RUN pnpm prune --prod
 
 # -----------------------------------------------------------------------------
@@ -33,19 +50,17 @@ FROM base AS runner
 ENV NODE_ENV=production
 WORKDIR /opt/app
 
-COPY --from=build /pnpm /pnpm
+# Copiamos solo lo necesario para producción
+COPY --from=build --chown=strapi:nodejs /opt/app/package.json ./
+COPY --from=build --chown=strapi:nodejs /opt/app/node_modules ./node_modules
+COPY --from=build --chown=strapi:nodejs /opt/app/dist ./dist
+COPY --from=build --chown=strapi:nodejs /opt/app/public ./public
+COPY --from=build --chown=strapi:nodejs /opt/app/favicon.png ./favicon.png
 
-COPY --from=build /opt/app/package.json ./package.json
-COPY --from=build /opt/app/node_modules ./node_modules
-COPY --from=build /opt/app/config ./config
-COPY --from=build /opt/app/dist ./dist
-COPY --from=build /opt/app/dist/config ./config
-COPY --from=build /opt/app/public ./public
-COPY --from=build /opt/app/.strapi ./.strapi
-COPY --from=build /opt/app/favicon.png ./favicon.png
-COPY --from=build /opt/app/src ./src
-
-RUN mkdir -p public/uploads
+# Directorio para uploads (será montado como volumen en Coolify)
+RUN mkdir -p public/uploads && \
+    chown -R strapi:nodejs public/uploads
 
 EXPOSE 1337
-CMD ["pnpm", "run", "start"]
+
+CMD ["node", "dist/server.js"]
