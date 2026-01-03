@@ -1,13 +1,18 @@
 {
-  "extends": "@strapi/typescript-utils/tsconfigs/server",
   "compilerOptions": {
-    "outDir": "dist",
     "rootDir": ".",
-    "module": "CommonJS",
+    "outDir": "dist",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "esModuleInterop": true,
     "target": "ES2020",
-    "esModuleInterop": true, 
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "strict": true,
     "skipLibCheck": true,
-    "moduleResolution": "node"
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "noEmitOnError": true
   },
   "include": [
     "src/**/*.json",
