@@ -430,36 +430,6 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiCarCar extends Struct.CollectionTypeSchema {
-  collectionName: 'cars';
-  info: {
-    description: 'Inventory cars';
-    displayName: 'Auto';
-    pluralName: 'cars';
-    singularName: 'car';
-  };
-  options: {
-    draftAndPublish: true;
-  };
-  attributes: {
-    brand: Schema.Attribute.String & Schema.Attribute.Required;
-    createdAt: Schema.Attribute.DateTime;
-    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    image: Schema.Attribute.Media<'images'> & Schema.Attribute.Required;
-    locale: Schema.Attribute.String & Schema.Attribute.Private;
-    localizations: Schema.Attribute.Relation<'oneToMany', 'api::car.car'> &
-      Schema.Attribute.Private;
-    mileage: Schema.Attribute.Integer & Schema.Attribute.Required;
-    model: Schema.Attribute.String & Schema.Attribute.Required;
-    publishedAt: Schema.Attribute.DateTime;
-    updatedAt: Schema.Attribute.DateTime;
-    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
-      Schema.Attribute.Private;
-    year: Schema.Attribute.Integer & Schema.Attribute.Required;
-  };
-}
-
 export interface ApiGlobalSettingGlobalSetting extends Struct.SingleTypeSchema {
   collectionName: 'global_settings';
   info: {
@@ -543,7 +513,7 @@ export interface ApiLeadLead extends Struct.CollectionTypeSchema {
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
     email: Schema.Attribute.Email;
-    interest: Schema.Attribute.Relation<'oneToOne', 'api::car.car'>;
+    interest: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::lead.lead'> &
       Schema.Attribute.Private;
@@ -1066,7 +1036,6 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
-      'api::car.car': ApiCarCar;
       'api::global-setting.global-setting': ApiGlobalSettingGlobalSetting;
       'api::landing-page.landing-page': ApiLandingPageLandingPage;
       'api::lead.lead': ApiLeadLead;
