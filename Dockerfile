@@ -60,7 +60,6 @@ COPY --from=build /opt/app/package.json ./package.json
 COPY --from=build /opt/app/favicon.png ./favicon.png
 
 # Strapi necesita acceso a estas carpetas en runtime
-COPY --from=build /opt/app/config ./config
 COPY --from=build /opt/app/src ./src
 COPY --from=build /opt/app/database ./database
 
