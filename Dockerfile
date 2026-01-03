@@ -48,6 +48,11 @@ RUN pnpm prune --prod
 # -----------------------------------------------------------------------------
 # RUNNER STAGE (Imagen Final)
 # -----------------------------------------------------------------------------
+# ... (parte de arriba igual, stages base y build)
+
+# -----------------------------------------------------------------------------
+# RUNNER STAGE (Imagen Final)
+# -----------------------------------------------------------------------------
 FROM base AS runner
 
 ENV NODE_ENV=production
@@ -59,12 +64,16 @@ COPY --from=build /opt/app/public ./public
 COPY --from=build /opt/app/package.json ./package.json
 COPY --from=build /opt/app/favicon.png ./favicon.png
 
-# Strapi necesita acceso a estas carpetas en runtime
+# Copiamos source y database
 COPY --from=build /opt/app/src ./src
 COPY --from=build /opt/app/database ./database
 
-# Exponemos el puerto
+# --- EL CAMBIO MAGICO ---
+# 1. Copiamos la carpeta config original (para tener los .json y estructura)
+COPY --from=build /opt/app/config ./config
+# 2. Borramos los archivos TypeScript de esa carpeta para que no rompan en producción
+RUN rm -f ./config/*.ts
+
 EXPOSE 1337
 
-# Usamos 'exec' para pasar señales correctamente al proceso
 CMD ["pnpm", "run", "start"]
