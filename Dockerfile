@@ -31,27 +31,18 @@ RUN pnpm prune --prod
 # -----------------------------------------------------------------------------
 FROM base AS runner
 ENV NODE_ENV=production
+WORKDIR /opt/app
 
-# 1. Copiamos node_modules y dist
+COPY --from=build /pnpm /pnpm
+
+COPY --from=build /opt/app/package.json ./package.json
 COPY --from=build /opt/app/node_modules ./node_modules
 COPY --from=build /opt/app/dist ./dist
-
-# 2. Estáticos básicos
 COPY --from=build /opt/app/public ./public
-COPY --from=build /opt/app/package.json ./package.json
-COPY --from=build /opt/app/favicon.png ./favicon.png
-COPY --from=build /opt/app/dist/config ./config
-COPY --from=build /opt/app/src ./src
-
-# 3. [LA SOLUCIÓN] Copiamos la carpeta oculta .strapi
-# Aquí es donde Strapi v5 guarda los artefactos del cliente y manifestos.
 COPY --from=build /opt/app/.strapi ./.strapi
+COPY --from=build /opt/app/favicon.png ./favicon.png
 
-# 4. Uploads
 RUN mkdir -p public/uploads
-
-# --- FORZAR REBUILD (Cambiá este número si Coolify se salta el build) ---
-# BUILD_ID=1
 
 EXPOSE 1337
 CMD ["pnpm", "run", "start"]
