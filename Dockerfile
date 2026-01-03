@@ -41,6 +41,7 @@ COPY --from=build /opt/app/dist ./dist
 COPY --from=build /opt/app/public ./public
 COPY --from=build /opt/app/.strapi ./.strapi
 COPY --from=build /opt/app/favicon.png ./favicon.png
+COPY --from=build /opt/app/src ./src
 
 RUN mkdir -p public/uploads
 
