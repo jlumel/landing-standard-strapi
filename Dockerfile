@@ -6,6 +6,7 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
+# Instalamos dependencias del sistema
 RUN apk update && apk add --no-cache \
     build-base gcc autoconf automake zlib-dev libpng-dev vips-dev git curl > /dev/null 2>&1
 
@@ -19,25 +20,10 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --prod=false
 COPY . .
 
-# Aumentamos memoria para node por las dudas, aunque el problema era disco.
-ENV NODE_ENV=production
-ENV NODE_OPTIONS="--max-old-space-size=4096"
-
 # Compilamos
 RUN pnpm run build
 
-# --- [DETECTIVE MODE: ACTIVADO] ---
-# Listamos el contenido para encontrar el index.html
-RUN echo "==========================================" && \
-    echo " BUSCANDO EL ADMIN PANEL... " && \
-    echo "==========================================" && \
-    ls -F dist && \
-    echo "--- ¿HAY CARPETA BUILD DENTRO DE DIST? ---" && \
-    ls -F dist/build || echo "No existe dist/build" && \
-    echo "--- ¿HAY CARPETA ADMIN DENTRO DE DIST? ---" && \
-    ls -F dist/admin || echo "No existe dist/admin" && \
-    echo "=========================================="
-
+# Limpiamos dependencias dev
 RUN pnpm prune --prod
 
 # -----------------------------------------------------------------------------
@@ -46,16 +32,26 @@ RUN pnpm prune --prod
 FROM base AS runner
 ENV NODE_ENV=production
 
+# 1. Copiamos node_modules y dist
 COPY --from=build /opt/app/node_modules ./node_modules
 COPY --from=build /opt/app/dist ./dist
+
+# 2. Estáticos básicos
 COPY --from=build /opt/app/public ./public
 COPY --from=build /opt/app/package.json ./package.json
 COPY --from=build /opt/app/favicon.png ./favicon.png
 COPY --from=build /opt/app/dist/config ./config
 COPY --from=build /opt/app/src ./src
 
-# Creamos uploads
+# 3. [LA SOLUCIÓN] Copiamos la carpeta oculta .strapi
+# Aquí es donde Strapi v5 guarda los artefactos del cliente y manifestos.
+COPY --from=build /opt/app/.strapi ./.strapi
+
+# 4. Uploads
 RUN mkdir -p public/uploads
+
+# --- FORZAR REBUILD (Cambiá este número si Coolify se salta el build) ---
+# BUILD_ID=1
 
 EXPOSE 1337
 CMD ["pnpm", "run", "start"]
