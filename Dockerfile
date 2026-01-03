@@ -6,7 +6,7 @@ ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 
-# Instalamos curl y dependencias de sistema
+# Instalamos curl y dependencias
 RUN apk update && apk add --no-cache \
     build-base gcc autoconf automake zlib-dev libpng-dev vips-dev git curl > /dev/null 2>&1
 
@@ -20,11 +20,15 @@ COPY package.json pnpm-lock.yaml ./
 RUN pnpm install --frozen-lockfile --prod=false
 COPY . .
 
-# Al correr build, Strapi genera:
-# 1. Backend -> dist/
-# 2. Admin Panel -> build/ (¡ESTA ES LA QUE FALTABA!)
+# Compilamos
 ENV NODE_ENV=production
 RUN pnpm run build
+
+# --- DEBUG: LISTAR CONTENIDO DE DIST ---
+# Esto va a imprimir en el log qué carpetas se crearon.
+# Buscamos algo como 'dist/admin' o 'dist/build'.
+RUN echo "--- CONTENIDO DE DIST ---" && ls -R dist && echo "--- FIN CONTENIDO ---"
+
 RUN pnpm prune --prod
 
 # -----------------------------------------------------------------------------
@@ -48,11 +52,7 @@ COPY --from=build /opt/app/dist/config ./config
 # 4. Copiamos src
 COPY --from=build /opt/app/src ./src
 
-# 5. [SOLUCIÓN] Copiamos el build del Admin Panel
-# Esto evita que Strapi busque en node_modules y falle
-COPY --from=build /opt/app/build ./build
-
-# 6. Crear carpeta uploads
+# 5. Crear carpeta uploads
 RUN mkdir -p public/uploads
 
 EXPOSE 1337
