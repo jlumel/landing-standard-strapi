@@ -37,6 +37,7 @@ COPY --from=build /pnpm /pnpm
 
 COPY --from=build /opt/app/package.json ./package.json
 COPY --from=build /opt/app/node_modules ./node_modules
+COPY --from=build /opt/app/config ./config
 COPY --from=build /opt/app/dist ./dist
 COPY --from=build /opt/app/public ./public
 COPY --from=build /opt/app/.strapi ./.strapi
