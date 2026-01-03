@@ -51,15 +51,14 @@ ENV NODE_ENV=production
 WORKDIR /opt/app
 
 # Copiamos solo lo necesario para producción
-COPY --from=build --chown=strapi:nodejs /opt/app/package.json ./
-COPY --from=build --chown=strapi:nodejs /opt/app/node_modules ./node_modules
-COPY --from=build --chown=strapi:nodejs /opt/app/dist ./dist
-COPY --from=build --chown=strapi:nodejs /opt/app/public ./public
-COPY --from=build --chown=strapi:nodejs /opt/app/favicon.png ./favicon.png
+COPY --from=build /opt/app/package.json ./
+COPY --from=build /opt/app/node_modules ./node_modules
+COPY --from=build /opt/app/dist ./dist
+COPY --from=build /opt/app/public ./public
+COPY --from=build /opt/app/favicon.png ./favicon.png
 
 # Directorio para uploads (será montado como volumen en Coolify)
-RUN mkdir -p public/uploads && \
-    chown -R strapi:nodejs public/uploads
+RUN mkdir -p public/uploads
 
 EXPOSE 1337
 
