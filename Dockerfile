@@ -36,9 +36,11 @@ COPY --from=build /opt/app/package.json ./package.json
 COPY --from=build /opt/app/favicon.png ./favicon.png
 COPY --from=build /opt/app/src ./src
 
-# OJO: No copiamos la carpeta database ni config del build para evitar conflictos.
-# Vamos a inyectar la configuración de base de datos MANUALMENTE ahora.
+# --- CORRECCIÓN NUEVA: CREAR CARPETA UPLOADS ---
+# Creamos la carpeta manualmente para que Strapi no llore al arrancar
+RUN mkdir -p public/uploads
 
+# --- INYECCIÓN DE CONFIGURACIÓN DB (LA QUE YA FUNCIONÓ) ---
 RUN mkdir -p config && \
     echo "module.exports = ({ env }) => { \
       console.log('--- [DEBUG] CARGANDO CONFIGURACION INYECTADA POR DOCKER ---'); \
