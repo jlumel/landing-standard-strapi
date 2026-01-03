@@ -23,7 +23,9 @@
     // Include all js files
     "./**/*.js",
     // Force the JSON files in the src folder to be included
-    "src/**/*.json"
+    "src/**/*.json",
+    "src/**/*.ts",
+    "config/**/*.ts"
   ],
 
   "exclude": [
@@ -32,6 +34,7 @@
     "dist/",
     ".cache/",
     ".tmp/",
+    "public",
 
     // Do not include admin files in the server compilation
     "src/admin/",
